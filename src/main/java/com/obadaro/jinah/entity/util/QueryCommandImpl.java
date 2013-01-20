@@ -31,6 +31,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import com.obadaro.jinah.common.util.Strings;
 import com.obadaro.jinah.entity.annotation.util.WhereClauseFragments;
 import com.obadaro.jinah.entity.util.query.WhereClause;
 import com.obadaro.jinah.entity.util.query.WhereClauseBuilder;
@@ -55,8 +56,8 @@ public class QueryCommandImpl implements QueryCommand {
     protected String listQuery;
     protected String countQuery;
 
-    private boolean isNamedQuery;
-    private boolean countTotalRows;
+    protected boolean isNamedQuery;
+    protected boolean countTotalRows;
 
     /**
      * Constructor to receive an EntityManager to execute the queries.
@@ -86,8 +87,13 @@ public class QueryCommandImpl implements QueryCommand {
         if (countTotalRows && isBlank(countQuery)) {
             checkArgument(!isNamedQuery, "request.getQueryCount()");
 
-            int p = listQuery.toLowerCase().indexOf(" from ");
-            countQuery = "select COUNT(*)" + listQuery.substring(p);
+            int p = 0;
+            String lower = listQuery.toLowerCase();
+            if (!lower.startsWith("from ")) {
+                p = lower.indexOf(" from ");
+            }
+
+            countQuery = "select COUNT(*) " + listQuery.substring(p).trim();
         }
 
         createWhereClause();
@@ -213,12 +219,25 @@ public class QueryCommandImpl implements QueryCommand {
      */
     protected String appendClause(String query, SelectPart part, String clause) {
 
-        String token = part.getPart();
-        StringBuilder sb = new StringBuilder(query);
-        if (!query.trim().toLowerCase().endsWith(" " + token)) {
-            sb.append(" ").append(token).append(" ");
+        if (Strings.isBlank(clause)) {
+
+            return query;
+
+        } else {
+            String token = part.getPart();
+            StringBuilder sb = new StringBuilder(query.trim());
+
+            if (!query.trim().toLowerCase().contains(" " + token + " ")) {
+
+                sb.append(" ").append(token).append(" ");
+
+            } else if (SelectPart.where == part) {
+
+                sb.append(" and ");
+            }
+
+            return sb.append(clause).toString();
         }
-        return sb.append(clause).toString();
     }
 
     /**

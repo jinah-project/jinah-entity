@@ -26,7 +26,7 @@ import com.obadaro.jinah.entity.util.query.Parameters;
 
 /**
  * @author Roberto Badaro
- *
+ * 
  */
 public class QueryCommandTest {
 
@@ -61,6 +61,11 @@ public class QueryCommandTest {
         queryCmd = new QueryCommandImpl(em);
     }
 
+    @Test
+    public void __start() {
+        // noop
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void tConfigureNullArgs() {
 
@@ -90,6 +95,35 @@ public class QueryCommandTest {
             "select obj.id from Parameters obj where obj.id = :id and obj.startDate = :beginDate order by obj.startDate",
             queryCmd.listQuery);
 
+    }
+
+    @Test
+    public void tConfigureStartingWithFrom() {
+
+        Param p = new Param();
+        p.setId(Long.valueOf(120L));
+        p.setBeginDate(new Date());
+
+        QueryRequest req =
+            new QueryRequest("from Parameters obj", p, Arrays.asList(new String[] { "obj.startDate" }));
+
+        req.configPartialResult(0, 20, true);
+
+        queryCmd.configure(req, Long.class);
+
+        Assert.assertNotNull(queryCmd.listQuery);
+        Assert.assertNotNull(queryCmd.countQuery);
+        Assert.assertNotNull(queryCmd.whereClause);
+
+        Assert.assertTrue(queryCmd.whereClause.getWhereParameters().size() == 2);
+
+        Assert.assertEquals(
+            "from Parameters obj where obj.id = :id and obj.startDate = :beginDate order by obj.startDate",
+            queryCmd.listQuery);
+
+        Assert.assertEquals(
+            "select COUNT(*) from Parameters obj where obj.id = :id and obj.startDate = :beginDate",
+            queryCmd.countQuery);
     }
 
     @Test

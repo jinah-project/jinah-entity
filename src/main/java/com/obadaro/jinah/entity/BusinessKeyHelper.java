@@ -91,6 +91,10 @@ public class BusinessKeyHelper {
      */
     public static boolean equals(final Object thiz, final Object other) {
 
+        if (thiz == other) {
+            return true;
+        }
+
         FieldAccess[] fBusinessKey = null;
         if (thiz != null) {
             fBusinessKey = getBusinessKeyFields(thiz.getClass());
@@ -109,14 +113,11 @@ public class BusinessKeyHelper {
                                  final Object other,
                                  final FieldAccess[] fBusinessKey) {
 
-        if (other == null) {
-            return false;
-        }
         if (thiz == other) {
             return true;
         }
 
-        if (!thiz.getClass().isAssignableFrom(other.getClass())) {
+        if (other == null || !thiz.getClass().isAssignableFrom(other.getClass())) {
             return false;
         }
 

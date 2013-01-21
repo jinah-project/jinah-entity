@@ -204,7 +204,7 @@ public class WhereClauseBuilder {
             wf = new WhereFragment(paramValue, paramType, wcf, empty);
             whereParameters.put(wcf.name(), wf);
 
-            where.append(fragment).append(" ");
+            where.append(fragment).append(' ');
             if (!endsWithOperator(fragment)) {
                 where.append("and ");
             }

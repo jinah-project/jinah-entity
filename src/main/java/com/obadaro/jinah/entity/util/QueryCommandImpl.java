@@ -229,7 +229,7 @@ public class QueryCommandImpl implements QueryCommand {
 
             if (!query.trim().toLowerCase().contains(" " + token + " ")) {
 
-                sb.append(" ").append(token).append(" ");
+                sb.append(' ').append(token).append(' ');
 
             } else if (SelectPart.where == part) {
 

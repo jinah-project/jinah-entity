@@ -24,9 +24,6 @@ import java.util.Date;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.obadaro.jinah.entity.util.query.WhereClause;
-import com.obadaro.jinah.entity.util.query.WhereClauseBuilder;
-
 /**
  * @author Roberto Badaro
  * 

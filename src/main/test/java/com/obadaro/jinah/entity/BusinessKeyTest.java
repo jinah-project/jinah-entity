@@ -126,12 +126,36 @@ public class BusinessKeyTest {
     class DaEntity {
         String sigla;
         String nome;
+
+        public String getSigla() {
+            return sigla;
+        }
+
+        public void setSigla(String sigla) {
+            this.sigla = sigla;
+        }
+
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
     }
 
     @BusinessKey("nome")
     class AnotherEntity extends MinimalStructure {
         private static final long serialVersionUID = 1L;
         String nome;
+
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
     }
 
 }

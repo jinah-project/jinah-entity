@@ -75,7 +75,7 @@ public class BusinessKeyHelper {
                 businessKey = new String[] { "id" };
             }
 
-            _businessKeyFields = Reflections.findFields(clazz, businessKey);
+            _businessKeyFields = Reflections.findFields(clazz, null, false, businessKey);
 
             businessKeyClassMap.put(clazz, _businessKeyFields);
             return _businessKeyFields;
@@ -126,12 +126,8 @@ public class BusinessKeyHelper {
                 final Object v1 = f.get(thiz);
                 final Object v2 = f.get(other);
 
-                if ((v1 != null && v2 == null) || (v1 == null && v2 != null)) {
-                    return false;
-                }
-
                 if (v1 != v2) {
-                    if (!v1.equals(v2)) {
+                    if (v1 == null || v2 == null || !v1.equals(v2)) {
                         return false;
                     }
                 }

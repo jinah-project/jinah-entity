@@ -1,3 +1,3 @@
 jinah-entity
 ============
-Version 1.1.0_1
+Version 1.2.0_rc1

@@ -42,6 +42,13 @@ public class BusinessKeyTest {
     }
 
     @Test
+    public void tRecoverBusinessKeyForNonAnnotated() throws Exception {
+
+        final FieldAccess[] fields = BusinessKeyHelper.getBusinessKeyFields(NonAnnotatedEntity.class);
+        Assert.assertTrue(fields.length == 0);
+    }
+
+    @Test
     public void tEquals() throws Exception {
 
         final AnotherEntity a = new AnotherEntity();
@@ -51,6 +58,38 @@ public class BusinessKeyTest {
         b.nome = "Minas";
 
         Assert.assertTrue(a.equals(b));
+    }
+
+    @Test
+    public void tEqualsNonAnnotated() throws Exception {
+
+        final NonAnnotatedEntity a = new NonAnnotatedEntity();
+        final NonAnnotatedEntity b = new NonAnnotatedEntity();
+
+        a.nome = "Minas";
+        b.nome = "Minas";
+
+        try {
+            a.equals(b);
+
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof BusinessKeyException);
+            Assert.assertTrue(e.getMessage().startsWith("Invalid or inexistent"));
+        }
+    }
+
+    @Test
+    public void tHashCodeNonAnnotated() throws Exception {
+
+        final NonAnnotatedEntity a = new NonAnnotatedEntity();
+        a.nome = "Minas";
+
+        try {
+            a.hashCode();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof BusinessKeyException);
+            Assert.assertTrue(e.getMessage().startsWith("Invalid or inexistent"));
+        }
     }
 
     @Test
@@ -93,6 +132,42 @@ public class BusinessKeyTest {
         b.nome = "Sao Paulo";
 
         Assert.assertFalse(BusinessKeyHelper.equals(a, b));
+    }
+
+    @Test
+    public void tHashCodeEquals() throws Exception {
+
+        final DaEntity a = new DaEntity();
+        final DaEntity b = new DaEntity();
+
+        a.sigla = "MG";
+        a.nome = "Minas";
+
+        b.sigla = "MG";
+        b.nome = "Minas";
+
+        int hashA = BusinessKeyHelper.hashCode(a);
+        int hashB = BusinessKeyHelper.hashCode(b);
+
+        Assert.assertTrue(hashA == hashB);
+    }
+
+    @Test
+    public void tHashCodeNotEquals() throws Exception {
+
+        final DaEntity a = new DaEntity();
+        final DaEntity b = new DaEntity();
+
+        a.sigla = "MG";
+        a.nome = "Minas";
+
+        b.sigla = "MG";
+        b.nome = "Minas Gerais";
+
+        int hashA = BusinessKeyHelper.hashCode(a);
+        int hashB = BusinessKeyHelper.hashCode(b);
+
+        Assert.assertTrue(hashA != hashB);
     }
 
     boolean checkKeys(final Class<?> annotatedClass, final FieldAccess[] fieldsFound) {
@@ -146,6 +221,19 @@ public class BusinessKeyTest {
 
     @BusinessKey("nome")
     class AnotherEntity extends MinimalStructure {
+        private static final long serialVersionUID = 1L;
+        String nome;
+
+        public String getNome() {
+            return nome;
+        }
+
+        public void setNome(String nome) {
+            this.nome = nome;
+        }
+    }
+
+    class NonAnnotatedEntity extends MinimalStructure {
         private static final long serialVersionUID = 1L;
         String nome;
 

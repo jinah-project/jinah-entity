@@ -42,7 +42,14 @@ public abstract class MinimalStructure implements Serializable {
      */
     @Override
     public boolean equals(final Object obj) {
-        return this == obj || BusinessKeyHelper.equals(this, obj);
+
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof MinimalStructure)) {
+            return false;
+        }
+        return BusinessKeyHelper.equals(this, obj);
     }
 
     /*
